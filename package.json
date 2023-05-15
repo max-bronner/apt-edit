@@ -1,0 +1,20 @@
+{
+  "name": "apt-edit",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite --port 8080",
+    "build": "tsc && vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.1.4",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.5",
+    "vite-plugin-minify": "^1.5.2"
+  }
+}
