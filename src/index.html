@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./styles/reset.scss" />
-  <title>APT Edit</title>
-</head>
-<body>
-  <header></header>
-  <main>
-    <input type="file" multiple>
-  </main>
-  <footer></footer>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style/reset.scss" />
+    <script src="./script/main.ts" type="module"></script>
+    <title>APT Edit</title>
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <input type="file" class="file-reader__input" name="file-reader__input" id="file-reader__input" accept=".const, .apt" multiple />
+    </main>
+    <footer></footer>
+  </body>
 </html>
