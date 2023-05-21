@@ -1,6 +1,4 @@
-export type Parser<T> = (buffer: ArrayBuffer, index?: number) => T;
-
-export interface Const {
+export interface ConstFile {
   fileType: string;
   aptOffset: number;
   items: ConstItem[];
@@ -15,4 +13,10 @@ export interface ConstHead {
 export interface ConstItem {
   itemType: number;
   itemValue: number | string;
+}
+
+export const enum ConstItemType {
+  TypeUndefined = 0,
+  TypeString = 1,
+  TypeNumber = 4,
 }

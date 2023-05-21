@@ -1,7 +1,7 @@
-import type { Parser, Const, ConstHead, ConstItem } from './parser';
+import { ConstFile, ConstHead, ConstItem, ConstItemType } from './parser';
 import { parseString } from './utilities';
 
-const parseConstHead: Parser<ConstHead> = (buffer: ArrayBuffer) => {
+const parseConstHead = (buffer: ArrayBuffer): ConstHead => {
   const fileType = parseString(buffer);
   const iteratorHead = new Uint32Array(buffer, 20, 2).values();
   const aptOffset: number = iteratorHead.next().value;
@@ -9,16 +9,35 @@ const parseConstHead: Parser<ConstHead> = (buffer: ArrayBuffer) => {
   return {
     fileType,
     aptOffset,
-    itemCount
-  }
-}
+    itemCount,
+  };
+};
 
-export const parseConst: Parser<Const> = (buffer: ArrayBuffer) => {
-  const { itemCount, ...head } = parseConstHead(buffer);
+const parseConstItems = (
+  buffer: ArrayBuffer,
+  itemCount: number
+): ConstItem[] => {
+  const iteratorItems = new Uint32Array(buffer, 32, itemCount * 2).values();
+
   const items: ConstItem[] = [];
+  for (let i = 0; i < itemCount; i++) {
+    const itemType = iteratorItems.next().value;
+    const value = iteratorItems.next().value;
+    const itemValue =
+      itemType === ConstItemType.TypeString
+        ? parseString(buffer, value)
+        : value;
+    items.push({ itemType, itemValue });
+  }
+  return items;
+};
+
+export const parseConst = (buffer: ArrayBuffer): ConstFile => {
+  const { itemCount, ...head } = parseConstHead(buffer);
+  const items: ConstItem[] = parseConstItems(buffer, itemCount);
 
   return {
     ...head,
-    items
+    items,
   };
-}
+};

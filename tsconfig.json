@@ -7,7 +7,6 @@
 
     /* Bundling */
     "allowImportingTsExtensions": true,
-    "isolatedModules": true,
     "moduleResolution": "bundler",
     "noEmit": true,
     "resolveJsonModule": true,

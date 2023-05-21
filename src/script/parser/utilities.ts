@@ -1,9 +1,8 @@
-import { Parser } from './parser';
+const decoder = new TextDecoder();
 
-const isFalsy = (element: any): boolean => !element;
+export const isFalsy = (element: any): boolean => !element;
 
-export const parseString: Parser<string> = (buffer: ArrayBuffer, index: number = 0) => {
-  const decoder = new TextDecoder();
+export const parseString = (buffer: ArrayBuffer, index: number = 0): string => {
   const charArray = new Uint8Array(buffer, index);
   const length = charArray.findIndex(isFalsy);
   const stringArray = charArray.subarray(0, length);
