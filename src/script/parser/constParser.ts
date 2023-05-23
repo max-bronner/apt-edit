@@ -1,5 +1,11 @@
-import { ConstFile, ConstHead, ConstItem, ConstItemType } from './parser';
+import type { ConstFile, ConstHead, ConstItem } from './parser';
 import { parseString } from './utilities';
+
+export const enum ConstItemType {
+  TypeUndefined = 0,
+  TypeString = 1,
+  TypeNumber = 4,
+}
 
 const parseConstHead = (buffer: ArrayBuffer): ConstHead => {
   const fileType = parseString(buffer);

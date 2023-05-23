@@ -7,6 +7,7 @@
 
     /* Bundling */
     "allowImportingTsExtensions": true,
+    "isolatedModules": false,
     "moduleResolution": "bundler",
     "noEmit": true,
     "resolveJsonModule": true,
@@ -15,9 +16,8 @@
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "strict": true,
+    "strict": true
   },
   "include": ["**/*.d.ts", "**/*.ts", "**/*.js"],
   "exclude": ["dist", "node_modules"]
-
 }

@@ -1,4 +1,7 @@
-import { FileType } from './parser';
+export const enum FileType {
+  Apt = 'apt',
+  Const = 'const',
+}
 
 const decoder = new TextDecoder();
 

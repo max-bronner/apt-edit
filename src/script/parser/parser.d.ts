@@ -15,13 +15,6 @@ export interface ConstItem {
   itemValue: number | string;
 }
 
-export const enum FileType {
-  Apt = 'apt',
-  Const = 'const',
 }
 
-export const enum ConstItemType {
-  TypeUndefined = 0,
-  TypeString = 1,
-  TypeNumber = 4,
 }
