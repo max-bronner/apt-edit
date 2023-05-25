@@ -32,3 +32,6 @@ export const getFiles = (input: FileList | null): File[] => {
   }
   return [input[indexApt], input[indexConst]];
 };
+
+export const roundUp = (number: number, multiple: number): number =>
+  Math.ceil(number / multiple) * multiple;

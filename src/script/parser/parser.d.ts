@@ -1,3 +1,9 @@
+const enum ItemType {
+  TypeUndefined = 0,
+  TypeString = 1,
+  TypeNumber = 4,
+}
+
 export interface ConstFile {
   fileType: string;
   aptOffset: number;
@@ -8,10 +14,11 @@ export interface ConstHead {
   fileType: string;
   aptOffset: number;
   itemCount: number;
+  unknown: number;
 }
 
 export interface ConstItem {
-  itemType: number;
+  itemType: ItemType;
   itemValue: number | string;
 }
 
@@ -36,11 +43,3 @@ export interface OutputMovie {
   exports: number;
   count: number;
 }
-
-export interface Frame {}
-
-export interface Character {}
-
-export interface Import {}
-
-export interface Export {}
