@@ -1,4 +1,4 @@
-const enum ItemType {
+export enum ItemType {
   TypeUndefined = 0,
   TypeString = 1,
   TypeNumber = 4,

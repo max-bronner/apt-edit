@@ -1,5 +1,5 @@
-import type { ConstFile, ConstHead, ConstItem } from './parser';
-import { ItemType } from './parser';
+import type { ConstFile, ConstHead, ConstItem } from './parserType';
+import { ItemType } from './parserType';
 import { useParser } from './useParser';
 import { ConstItemStruct, ConstHeadStruct } from './structs';
 

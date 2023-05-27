@@ -1,4 +1,4 @@
-import type { AptFile, OutputMovie } from './parser';
+import type { AptFile, OutputMovie } from './parserType';
 import { parseString } from './utilities';
 
 const parseOutputMovie = (buffer: ArrayBuffer, index: number): OutputMovie => {
