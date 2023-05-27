@@ -1,4 +1,4 @@
-import { parseConst } from './parser/constParser';
+import { useParserConst } from './parser/constParser';
 import { parseApt } from './parser/aptParser';
 import { getFiles } from './parser/utilities';
 
@@ -16,7 +16,8 @@ fileInput.addEventListener(
     const constData = await constFile
       .arrayBuffer()
       .then((arrayBuffer: ArrayBuffer) => {
-        return parseConst(arrayBuffer);
+        const parserConst = useParserConst(arrayBuffer);
+        return parserConst.parseConst();
       });
     console.log('const', constData);
 
