@@ -1,5 +1,5 @@
-import { useParserConst } from './parser/constParser';
-import { parseApt } from './parser/aptParser';
+import { useParserConst } from './parser/useParserConst';
+import { useParserApt } from './parser/useParserApt';
 import { getFiles } from './parser/utilities';
 
 const fileInput = <HTMLInputElement>(
@@ -24,10 +24,10 @@ fileInput.addEventListener(
     const aptData = await aptFile
       .arrayBuffer()
       .then((arrayBuffer: ArrayBuffer) => {
-        const index = constData.aptOffset;
-        parseApt(arrayBuffer, index);
-        // parse apt
+        const parserApt = useParserApt(arrayBuffer);
+        return parserApt.parseApt(constData.aptOffset);
       });
+    console.log('apt', aptData);
   },
   false
 );

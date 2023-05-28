@@ -24,6 +24,7 @@ export interface ConstItem {
 
 export interface AptFile {
   fileType: string;
+  outputMovie: OutputMovie;
 }
 
 export interface OutputMovie {
