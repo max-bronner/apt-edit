@@ -28,13 +28,8 @@ export const useParser = (buffer: ArrayBuffer) => {
     }
   };
 
-  const parseStructMember = <T>(
-    parsedData: T,
-    [member, dataType]: [keyof Struct, Struct[keyof Struct]]
-  ): T => {
-    parsedData[member as keyof T] = parseDataType(
-      dataType as DataType
-    ) as T[keyof T];
+  const parseStructMember = <T>(parsedData: T, [member, dataType]: [keyof Struct, Struct[keyof Struct]]): T => {
+    parsedData[member as keyof T] = parseDataType(dataType as DataType) as T[keyof T];
     return parsedData;
   };
 

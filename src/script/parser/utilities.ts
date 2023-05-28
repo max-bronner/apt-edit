@@ -5,9 +5,7 @@ export const enum FileType {
 
 export const getFiles = (input: FileList | null): File[] => {
   if (input?.length !== 2) {
-    throw new Error(
-      `2 files required, but ${input ? input.length : 0} selected`
-    );
+    throw new Error(`2 files required, but ${input ? input.length : 0} selected`);
   }
   const [nameA, extensionA] = input[0].name.split('.');
   const [nameB, extensionB] = input[1].name.split('.');
@@ -22,5 +20,4 @@ export const getFiles = (input: FileList | null): File[] => {
   return [input[indexApt], input[indexConst]];
 };
 
-export const roundUp = (number: number, multiple: number): number =>
-  Math.ceil(number / multiple) * multiple;
+export const roundUp = (number: number, multiple: number): number => Math.ceil(number / multiple) * multiple;

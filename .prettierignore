@@ -1,0 +1,7 @@
+# Ignore files:
+/src/style/reset.scss
+pnpm-lock.yaml
+
+# Ignore artifacts:
+**/dist
+**/node_modules

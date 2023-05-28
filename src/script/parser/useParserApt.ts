@@ -7,10 +7,7 @@ export const useParserApt = (buffer: ArrayBuffer) => {
 
   const parseApt = (offset: number): AptFile => {
     const fileType = parser.getString(0);
-    const outputMovie = parser.parseStruct<OutputMovie>(
-      OutputMovieStruct,
-      offset
-    );
+    const outputMovie = parser.parseStruct<OutputMovie>(OutputMovieStruct, offset);
 
     return {
       fileType,

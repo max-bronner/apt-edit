@@ -15,9 +15,7 @@ export const useParserConst = (buffer: ArrayBuffer) => {
     for (let i = 0; i < itemCount; i++) {
       const item = parser.parseStruct<ConstItem>(ConstItemStruct);
       item.itemValue =
-        item.itemType === ItemType.TypeString
-          ? parser.getString(item.itemValue as number)
-          : item.itemValue;
+        item.itemType === ItemType.TypeString ? parser.getString(item.itemValue as number) : item.itemValue;
       items.push(item);
     }
     return items;
