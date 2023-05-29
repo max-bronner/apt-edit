@@ -1,7 +1,6 @@
-import { DataType } from './structs';
-import { roundUp } from './utilities';
-
-type Struct = Record<string, string | number>;
+import type { Struct } from './types';
+import { DataType } from './types';
+import { roundUp } from '../utilities/utilities';
 
 export const useParser = (buffer: ArrayBuffer) => {
   let offset = 0;
