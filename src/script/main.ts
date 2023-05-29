@@ -1,6 +1,6 @@
-import { useParserConst } from './parser/useParserConst';
-import { useParserApt } from './parser/useParserApt';
-import { getFiles } from './parser/utilities';
+import { useParserConst } from './constParser/useParserConst';
+import { useParserApt } from './aptParser/useParserApt';
+import { getFiles } from './utilities/utilities';
 
 const fileInput = <HTMLInputElement>document.getElementById('file-reader__input');
 
