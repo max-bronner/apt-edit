@@ -23,23 +23,23 @@ export enum OutputFrameStruct {
   frameItem = DataType.Uint32,
 }
 
-export enum FrameItem {
+export enum FrameItemStruct {
   type = DataType.Uint32,
 }
 
-export enum Character {
+export enum CharacterStruct {
   type = DataType.Uint32,
   signature = DataType.Uint32,
 }
 
-export enum Import {
+export enum ImportStruct {
   movie = DataType.Uint32,
   name = DataType.Uint32,
   character = DataType.Uint32,
   pointer = DataType.Uint32,
 }
 
-export enum Export {
+export enum ExportStruct {
   name = DataType.Uint32,
   character = DataType.Uint32,
 }

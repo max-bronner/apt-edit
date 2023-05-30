@@ -41,3 +41,10 @@ export interface OutputMovie {
   exports: number;
   count: number;
 }
+
+export interface Import {
+  movie: string | number;
+  name: string | number;
+  character: number;
+  pointer: number;
+}

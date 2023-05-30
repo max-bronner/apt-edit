@@ -7,12 +7,16 @@ export const useParser = (buffer: ArrayBuffer) => {
   const view = new DataView(buffer);
   const decoder = new TextDecoder();
 
+  const updateOffset = (newOffset: number) => (offset = newOffset);
+
   const getString = (index: number): string => {
     const charArray = new Uint8Array(buffer, index);
     const length = charArray.findIndex((element: number): boolean => !element);
     const stringArray = charArray.subarray(0, length);
     return decoder.decode(stringArray);
   };
+
+  const getUint32 = (index: number) => view.getUint32(index, true);
 
   const parseDataType = (dataType: DataType): string | number => {
     switch (dataType) {
@@ -40,6 +44,8 @@ export const useParser = (buffer: ArrayBuffer) => {
 
   return {
     getString,
+    getUint32,
     parseStruct,
+    updateOffset,
   };
 };
