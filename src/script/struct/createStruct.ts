@@ -19,8 +19,17 @@ export const createStruct = (): Struct => {
     return data;
   };
 
+  const getCurrentOffset = () => {
+    return currentOffset;
+  };
+
+  const setCurrentOffset = (offset: number) => {
+    currentOffset = offset;
+  };
 
   return {
+    getCurrentOffset,
+    setCurrentOffset,
     addMember,
     parse,
   };

@@ -7,10 +7,13 @@ export interface Member {
   uint32(): Member;
   string(): Member;
   pointer(): Member;
+  array(struct: Struct, count: number | string): Member;
   parse(view: DataView, offset: number, structData: { [key: string]: any }): number;
 }
 
 export interface Struct {
+  getCurrentOffset(): number;
+  setCurrentOffset(offset: number): void;
   addMember(name: string): Member;
   parse(view: DataView, offset?: number): { [key: string]: [any] };
 }
