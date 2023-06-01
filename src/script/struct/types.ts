@@ -7,7 +7,7 @@ export interface Member {
   uint32(): Member;
   string(): Member;
   pointer(): Member;
-  array(struct: Struct, count: number | string): Member;
+  array(struct: Struct, count: number | string): void;
   parse(view: DataView, offset: number, structData: { [key: string]: any }): number;
 }
 

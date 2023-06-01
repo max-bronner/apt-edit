@@ -43,7 +43,6 @@ export const createMember = (name: string): Member => {
         member.byteSize ||= struct.getCurrentOffset() - offset;
         return arrayData;
       });
-      return member;
     },
     parse: (view: DataView, offset: number, data) => {
       data[member.name] = member.callbacks.reduce((acc: number, callback: ParserCallback) => {
