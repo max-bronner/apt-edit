@@ -44,6 +44,13 @@ export const createMember = (name: string): Member => {
         return arrayData;
       });
     },
+    custom: (customCallback: ParserCallback, byteSize: number) => {
+      member.callbacks.push((view: DataView, offset: number, data) => {
+        member.byteSize ||= byteSize;
+        return customCallback(view, offset, data);
+      });
+      return member;
+    },
     parse: (view: DataView, offset: number, data) => {
       data[member.name] = member.callbacks.reduce((acc: number, callback: ParserCallback) => {
         return callback(view, acc, data);

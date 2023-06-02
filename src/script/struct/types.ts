@@ -1,4 +1,5 @@
 export type ParserCallback = (view: DataView, offset: number, data: { [key: string]: any }) => any;
+export type CustomCallback = (view: DataView, offset: number, data: { [key: string]: any }) => any;
 
 export interface Member {
   name: string;
@@ -8,6 +9,7 @@ export interface Member {
   string(): Member;
   pointer(): Member;
   array(struct: Struct, count: number | string): void;
+  custom(customCallback: CustomCallback, byteSize: number): Member;
   parse(view: DataView, offset: number, structData: { [key: string]: any }): number;
 }
 
