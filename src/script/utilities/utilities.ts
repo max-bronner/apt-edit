@@ -21,3 +21,11 @@ export const getFiles = (input: FileList | null): File[] => {
 };
 
 export const roundUp = (number: number, multiple: number): number => Math.ceil(number / multiple) * multiple;
+
+export const getString = (view: DataView, offset: number) => {
+  const decoder = new TextDecoder();
+  const charArray = new Uint8Array(view.buffer, offset);
+  const nullIndex = charArray.indexOf(0);
+  const stringArray = charArray.subarray(0, nullIndex);
+  return decoder.decode(stringArray);
+};
