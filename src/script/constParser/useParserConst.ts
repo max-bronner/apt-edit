@@ -1,33 +1,15 @@
-import type { ConstFile, ConstHead, ConstItem } from './types';
-import { ItemType } from './types';
-import { useParser } from '../parser/useParser';
-import { ConstItemStruct, ConstHeadStruct } from './structs';
+import type { ConstFile } from './types';
+import constStruct from './structs';
 
 export const useParserConst = (buffer: ArrayBuffer) => {
-  const parser = useParser(buffer);
-
-  const parseConstHead = (): ConstHead => {
-    return parser.parseStruct(ConstHeadStruct);
-  };
-
-  const parseConstItems = (itemCount: number): ConstItem[] => {
-    const items: ConstItem[] = [];
-    for (let i = 0; i < itemCount; i++) {
-      const item = parser.parseStruct<ConstItem>(ConstItemStruct);
-      item.itemValue =
-        item.itemType === ItemType.TypeString ? parser.getString(item.itemValue as number) : item.itemValue;
-      items.push(item);
-    }
-    return items;
-  };
-
+  const constView = new DataView(buffer);
   const parseConst = (): ConstFile => {
-    const { itemCount, ...head } = parseConstHead();
-    const items = parseConstItems(itemCount);
+    const constFile = constStruct.parse(constView);
 
     return {
-      ...head,
-      items,
+      fileType: constFile.fileType as unknown as string,
+      aptOffset: constFile.aptOffset as unknown as number,
+      items: constFile.items,
     };
   };
 

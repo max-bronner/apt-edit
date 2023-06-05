@@ -11,7 +11,6 @@ export interface ConstFile {
 }
 
 export interface ConstHead {
-  fileType: string;
   aptOffset: number;
   itemCount: number;
   unknown: number;

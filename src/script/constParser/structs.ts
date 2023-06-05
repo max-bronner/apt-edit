@@ -1,14 +1,21 @@
-import { DataType } from '../parser/types';
+import { createStruct } from '../struct/createStruct';
+import { getString } from '../utilities/utilities';
+import { CustomCallback } from '../struct/types';
 
-// camelCase for struct enums to emphasize they are used as structs
-export enum ConstHeadStruct {
-  fileType = DataType.String,
-  aptOffset = DataType.Uint32,
-  itemCount = DataType.Uint32,
-  unknown = DataType.Uint32,
-}
+const parseType: CustomCallback = (view, offset, data) => {
+  const dataValue = view.getUint32(offset, true);
+  return data.type === 1 ? getString(view, dataValue) : dataValue;
+};
 
-export enum ConstItemStruct {
-  itemType = DataType.Uint32,
-  itemValue = DataType.Uint32,
-}
+const constItems = createStruct();
+constItems.addMember('type').uint32();
+constItems.addMember('value').custom(parseType, 4);
+
+const constStruct = createStruct();
+constStruct.addMember('fileType').string();
+constStruct.addMember('aptOffset').uint32();
+constStruct.addMember('itemCount').uint32();
+constStruct.addMember('unknown').uint32();
+constStruct.addMember('items').array(constItems, 'itemCount');
+
+export default constStruct;
