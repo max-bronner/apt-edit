@@ -2,14 +2,19 @@ import { createStruct } from '../createStruct';
 import type { CustomCallback } from '../types';
 import { getString } from '../../utilities/utilities';
 
-const parseType: CustomCallback = (view, offset, data) => {
+const parseConstItemType: CustomCallback = (view, offset, data) => {
   const dataValue = view.getUint32(offset, true);
   return data.type === 1 ? getString(view, dataValue) : dataValue;
 };
 
+const parseCharacterType: CustomCallback = (view, offset, data) => {
+  if (offset === 0) return 0;
+  return view.getUint32(offset, true);
+};
+
 const constItems = createStruct();
 constItems.addMember('type').uint32();
-constItems.addMember('value').custom(parseType, 4);
+constItems.addMember('value').custom(parseConstItemType, 4);
 
 const constStruct = createStruct();
 constStruct.addMember('fileType').string();
@@ -20,6 +25,9 @@ constStruct.addMember('items').array(constItems, 'itemCount');
 
 const headerStruct = createStruct();
 headerStruct.addMember('fileType').string();
+
+const characterStruct = createStruct();
+characterStruct.addMember('type').pointer().custom(parseCharacterType, 4);
 
 const importStruct = createStruct();
 importStruct.addMember('movie').pointer().string();
@@ -38,7 +46,7 @@ outputMovieStruct.addMember('frameCount').uint32();
 outputMovieStruct.addMember('frames').uint32();
 outputMovieStruct.addMember('pointer').uint32();
 outputMovieStruct.addMember('characterCount').uint32();
-outputMovieStruct.addMember('characters').pointer();
+outputMovieStruct.addMember('characters').pointer().array(characterStruct, 'characterCount');
 outputMovieStruct.addMember('screenSizeX').uint32();
 outputMovieStruct.addMember('screenSizeY').uint32();
 outputMovieStruct.addMember('unknown').uint32();
