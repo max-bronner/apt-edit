@@ -1,45 +1,42 @@
-import { DataType } from '../parser/types';
+import { createStruct } from '../struct/createStruct';
+import { CustomCallback } from '../struct/types';
 
-export enum OutputMovieStruct {
-  type = DataType.Uint32,
-  signature = DataType.Uint32,
-  frameCount = DataType.Uint32,
-  frames = DataType.Uint32,
-  pointer = DataType.Uint32,
-  characterCount = DataType.Uint32,
-  characters = DataType.Uint32,
-  screenSizeX = DataType.Uint32,
-  screenSizeY = DataType.Uint32,
-  unknown = DataType.Uint32,
-  importCount = DataType.Uint32,
-  imports = DataType.Uint32,
-  exportCount = DataType.Uint32,
-  exports = DataType.Uint32,
-  count = DataType.Uint32,
-}
+const parseType: CustomCallback = (view, offset, data) => {
+  if (offset === 0) return 0;
+  return view.getUint32(offset, true);
+};
 
-export enum OutputFrameStruct {
-  frameItemCount = DataType.Uint32,
-  frameItem = DataType.Uint32,
-}
+const headerStruct = createStruct();
+headerStruct.addMember('fileType').string();
 
-export enum FrameItemStruct {
-  type = DataType.Uint32,
-}
+const characterStruct = createStruct();
+characterStruct.addMember('type').pointer().custom(parseType, 4);
 
-export enum CharacterStruct {
-  type = DataType.Uint32,
-  signature = DataType.Uint32,
-}
+const importStruct = createStruct();
+importStruct.addMember('movie').pointer().string();
+importStruct.addMember('name').pointer().string();
+importStruct.addMember('character').uint32();
+importStruct.addMember('pointer').uint32();
 
-export enum ImportStruct {
-  movie = DataType.Uint32,
-  name = DataType.Uint32,
-  character = DataType.Uint32,
-  pointer = DataType.Uint32,
-}
+const exportStruct = createStruct();
+exportStruct.addMember('name').pointer().string();
+exportStruct.addMember('character').uint32();
 
-export enum ExportStruct {
-  name = DataType.Uint32,
-  character = DataType.Uint32,
-}
+const outputMovieStruct = createStruct();
+outputMovieStruct.addMember('type').uint32();
+outputMovieStruct.addMember('signature').uint32();
+outputMovieStruct.addMember('frameCount').uint32();
+outputMovieStruct.addMember('frames').uint32();
+outputMovieStruct.addMember('pointer').uint32();
+outputMovieStruct.addMember('characterCount').uint32();
+outputMovieStruct.addMember('characters').pointer().array(characterStruct, 'characterCount');
+outputMovieStruct.addMember('screenSizeX').uint32();
+outputMovieStruct.addMember('screenSizeY').uint32();
+outputMovieStruct.addMember('unknown').uint32();
+outputMovieStruct.addMember('importCount').uint32();
+outputMovieStruct.addMember('imports').pointer().array(importStruct, 'importCount');
+outputMovieStruct.addMember('exportCount').uint32();
+outputMovieStruct.addMember('exports').pointer().array(exportStruct, 'exportCount');
+outputMovieStruct.addMember('count').uint32();
+
+export { outputMovieStruct, headerStruct };
