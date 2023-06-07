@@ -8,6 +8,7 @@ export interface Member {
   uint32(): Member;
   string(): Member;
   pointer(): Member;
+  struct(struct: Struct): Member;
   array(struct: Struct, count: number | string): void;
   custom(customCallback: CustomCallback, byteSize: number): Member;
   parse(view: DataView, offset: number, structData: { [key: string]: any }): number;
