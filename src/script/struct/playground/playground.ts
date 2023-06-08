@@ -46,7 +46,7 @@ outputMovieStruct.addMember('frameCount').uint32();
 outputMovieStruct.addMember('frames').uint32();
 outputMovieStruct.addMember('pointer').uint32();
 outputMovieStruct.addMember('characterCount').uint32();
-outputMovieStruct.addMember('characters').pointer().array(characterStruct, 'characterCount');
+outputMovieStruct.addMember('characters').pointer().arrayAlt('characterCount').pointer().custom(parseCharacterType, 4);
 outputMovieStruct.addMember('screenSizeX').uint32();
 outputMovieStruct.addMember('screenSizeY').uint32();
 outputMovieStruct.addMember('unknown').uint32();
@@ -64,4 +64,6 @@ export const playground = async () => {
 
   const dataConst = constStruct.parse(viewConst);
   const dataApt = outputMovieStruct.parse(viewApt, dataConst.aptOffset as unknown as number);
+
+  console.log(dataApt);
 };

@@ -10,6 +10,7 @@ export interface Member {
   pointer(): Member;
   struct(struct: Struct): Member;
   array(struct: Struct, count: number | string): void;
+  arrayAlt(count: number | string): Member;
   custom(customCallback: CustomCallback, byteSize: number): Member;
   parse(view: DataView, offset: number, structData: { [key: string]: any }): number;
 }

@@ -53,6 +53,22 @@ export const createMember = (name: string): Member => {
         return arrayData;
       });
     },
+    arrayAlt: (count: number | string) => {
+      const arrayMember = createMember('array');
+      member.callbacks.push((view: DataView, offset: number, data) => {
+        const loops = typeof count === 'number' ? count : (data[count] as number);
+        const arrayData = [];
+        let currentOffset = offset;
+        for (let i = 0; i < loops; i++) {
+          const entryData: { array?: any } = {};
+          currentOffset += arrayMember.parse(view, currentOffset, entryData);
+          arrayData.push(entryData.array);
+        }
+        member.byteSize ||= currentOffset - offset;
+        return arrayData;
+      });
+      return arrayMember;
+    },
     custom: (customCallback: ParserCallback, byteSize: number) => {
       member.callbacks.push((view: DataView, offset: number, data) => {
         member.byteSize ||= byteSize;

@@ -29,7 +29,7 @@ outputMovieStruct.addMember('frameCount').uint32();
 outputMovieStruct.addMember('frames').uint32();
 outputMovieStruct.addMember('pointer').uint32();
 outputMovieStruct.addMember('characterCount').uint32();
-outputMovieStruct.addMember('characters').pointer().array2('characterCount').pointer().custom(parseType, 4);
+outputMovieStruct.addMember('characters').pointer().arrayAlt('characterCount').pointer().custom(parseType, 4);
 outputMovieStruct.addMember('screenSizeX').uint32();
 outputMovieStruct.addMember('screenSizeY').uint32();
 outputMovieStruct.addMember('unknown').uint32();
