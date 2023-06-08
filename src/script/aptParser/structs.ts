@@ -1,16 +1,14 @@
 import { createStruct } from '../struct/createStruct';
-import { CustomCallback } from '../struct/types';
-
-const parseType: CustomCallback = (view, offset, data) => {
-  if (offset === 0) return 0;
-  return view.getUint32(offset, true);
-};
 
 const headerStruct = createStruct();
 headerStruct.addMember('fileType').string();
 
-const characterStruct = createStruct();
-characterStruct.addMember('type').pointer().custom(parseType, 4);
+const frameItemStruct = createStruct();
+frameItemStruct.addMember('type').uint32();
+
+const outputFrameStruct = createStruct();
+outputFrameStruct.addMember('frameItemCount').uint32();
+outputFrameStruct.addMember('frameItems').pointer().arrayAlt('frameItemCount').pointer().struct(frameItemStruct);
 
 const importStruct = createStruct();
 importStruct.addMember('movie').pointer().string();
@@ -26,17 +24,17 @@ const outputMovieStruct = createStruct();
 outputMovieStruct.addMember('type').uint32();
 outputMovieStruct.addMember('signature').uint32();
 outputMovieStruct.addMember('frameCount').uint32();
-outputMovieStruct.addMember('frames').uint32();
+outputMovieStruct.addMember('frames').pointer().arrayAlt('frameCount').struct(outputFrameStruct);
 outputMovieStruct.addMember('pointer').uint32();
 outputMovieStruct.addMember('characterCount').uint32();
-outputMovieStruct.addMember('characters').pointer().arrayAlt('characterCount').pointer().custom(parseType, 4);
+outputMovieStruct.addMember('characters').pointer().arrayAlt('characterCount').pointer();
 outputMovieStruct.addMember('screenSizeX').uint32();
 outputMovieStruct.addMember('screenSizeY').uint32();
 outputMovieStruct.addMember('unknown').uint32();
 outputMovieStruct.addMember('importCount').uint32();
-outputMovieStruct.addMember('imports').pointer().array(importStruct, 'importCount');
+outputMovieStruct.addMember('imports').pointer().arrayAlt('importCount').struct(importStruct);
 outputMovieStruct.addMember('exportCount').uint32();
-outputMovieStruct.addMember('exports').pointer().array(exportStruct, 'exportCount');
+outputMovieStruct.addMember('exports').pointer().arrayAlt('exportCount').struct(exportStruct);
 outputMovieStruct.addMember('count').uint32();
 
 export { outputMovieStruct, headerStruct };

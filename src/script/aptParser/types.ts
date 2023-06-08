@@ -31,7 +31,7 @@ export interface OutputMovie {
   frames: number;
   pointer: number;
   characterCount: number;
-  characters: number;
+  characters: number[];
   screenSizeX: number;
   screenSizeY: number;
   unknown: number;
