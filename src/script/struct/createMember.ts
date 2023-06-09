@@ -54,23 +54,7 @@ export const createMember = (name: string): Member => {
         return structData;
       });
     },
-    array: (struct: Struct, count: number | string) => {
-      member.callbacks.push((view: DataView, offset: Offset, data) => {
-        if (offset === null) {
-          member.byteSize ||= 4;
-          return null;
-        }
-        const loops = typeof count === 'number' ? count : (data[count] as number);
-        const arrayData = [];
-        struct.setCurrentOffset(offset);
-        for (let i = 0; i < loops; i++) {
-          arrayData.push(struct.parse(view, undefined, false));
-        }
-        member.byteSize ||= struct.getCurrentOffset() - offset;
-        return arrayData;
-      });
-    },
-    arrayAlt: (count: number | string) => {
+    array: (count: number | string) => {
       const arrayMember = createMember('array');
       member.callbacks.push((view: DataView, offset: Offset, data) => {
         if (offset === null) {

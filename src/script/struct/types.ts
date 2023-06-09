@@ -11,8 +11,7 @@ export interface Member {
   uint32(): void;
   string(): void;
   struct(struct: Struct): void;
-  array(struct: Struct, count: number | string): void;
-  arrayAlt(count: number | string): Member;
+  array(count: number | string): Member;
   custom(customCallback: CustomCallback, byteSize: number): Member;
   parse(view: DataView, offset: number, structData: { [key: string]: any }): number;
 }

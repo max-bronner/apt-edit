@@ -16,7 +16,7 @@ constStruct.addMember('fileType').string();
 constStruct.addMember('aptOffset').uint32();
 constStruct.addMember('itemCount').uint32();
 constStruct.addMember('unknown').uint32();
-constStruct.addMember('items').arrayAlt('itemCount').struct(constItems);
+constStruct.addMember('items').array('itemCount').struct(constItems);
 
 const headerStruct = createStruct();
 headerStruct.addMember('fileType').string();
@@ -71,7 +71,7 @@ initActionStruct.addMember('actionBytes').uint32();
 
 const outputFrameStruct = createStruct();
 outputFrameStruct.addMember('frameItemCount').uint32();
-outputFrameStruct.addMember('frameItems').pointer().arrayAlt('frameItemCount').pointer();
+outputFrameStruct.addMember('frameItems').pointer().array('frameItemCount').pointer();
 
 const importStruct = createStruct();
 importStruct.addMember('movie').pointer().string();
@@ -85,17 +85,17 @@ exportStruct.addMember('character').uint32();
 
 const outputMovieStruct = createStruct(characterStruct);
 outputMovieStruct.addMember('frameCount').uint32();
-outputMovieStruct.addMember('frames').pointer().arrayAlt('frameCount').struct(outputFrameStruct);
+outputMovieStruct.addMember('frames').pointer().array('frameCount').struct(outputFrameStruct);
 outputMovieStruct.addMember('pointer').uint32();
 outputMovieStruct.addMember('characterCount').uint32();
-outputMovieStruct.addMember('characters').pointer().arrayAlt('characterCount').pointer().uint32();
+outputMovieStruct.addMember('characters').pointer().array('characterCount').pointer().uint32();
 outputMovieStruct.addMember('screenSizeX').uint32();
 outputMovieStruct.addMember('screenSizeY').uint32();
 outputMovieStruct.addMember('unknown').uint32();
 outputMovieStruct.addMember('importCount').uint32();
-outputMovieStruct.addMember('imports').pointer().arrayAlt('importCount').struct(importStruct);
+outputMovieStruct.addMember('imports').pointer().array('importCount').struct(importStruct);
 outputMovieStruct.addMember('exportCount').uint32();
-outputMovieStruct.addMember('exports').pointer().arrayAlt('exportCount').struct(exportStruct);
+outputMovieStruct.addMember('exports').pointer().array('exportCount').struct(exportStruct);
 outputMovieStruct.addMember('count').uint32();
 
 enum FrameItemType {
