@@ -1,5 +1,5 @@
 import { roundUp } from '../utilities/utilities';
-import type { Member, Struct, ParserCallback } from './types';
+import type { Offset, Member, Struct, ParserCallback, CustomCallback } from './types';
 
 const decoder = new TextDecoder();
 
@@ -8,21 +8,34 @@ export const createMember = (name: string): Member => {
     name,
     byteSize: 0,
     callbacks: [],
-    pointer: () => {
-      member.callbacks.push((view: DataView, offset: number) => {
+    pointer: (allowNullPointer: boolean = false) => {
+      member.callbacks.push((view: DataView, offset: Offset) => {
+        if (offset === null) {
+          member.byteSize ||= 4;
+          return null;
+        }
+        const pointerValue = view.getUint32(offset, true);
         member.byteSize ||= 4;
-        return view.getUint32(offset, true);
+        return !allowNullPointer && pointerValue === 0 ? null : pointerValue;
       });
       return member;
     },
     uint32: () => {
-      member.callbacks.push((view: DataView, offset: number) => {
+      member.callbacks.push((view: DataView, offset: Offset) => {
+        if (offset === null) {
+          member.byteSize ||= 4;
+          return null;
+        }
         member.byteSize ||= 4;
         return view.getUint32(offset, true);
       });
     },
     string: () => {
-      member.callbacks.push((view: DataView, offset: number) => {
+      member.callbacks.push((view: DataView, offset: Offset) => {
+        if (offset === null) {
+          member.byteSize ||= 4;
+          return null;
+        }
         const charArray = new Uint8Array(view.buffer, offset);
         const nullIndex = charArray.indexOf(0);
         const stringArray = charArray.subarray(0, nullIndex);
@@ -31,14 +44,22 @@ export const createMember = (name: string): Member => {
       });
     },
     struct: (struct: Struct) => {
-      member.callbacks.push((view: DataView, offset: number) => {
+      member.callbacks.push((view: DataView, offset: Offset) => {
+        if (offset === null) {
+          member.byteSize ||= 4;
+          return null;
+        }
         const structData = struct.parse(view, offset, false);
         member.byteSize ||= struct.getCurrentOffset() - offset;
         return structData;
       });
     },
     array: (struct: Struct, count: number | string) => {
-      member.callbacks.push((view: DataView, offset: number, data) => {
+      member.callbacks.push((view: DataView, offset: Offset, data) => {
+        if (offset === null) {
+          member.byteSize ||= 4;
+          return null;
+        }
         const loops = typeof count === 'number' ? count : (data[count] as number);
         const arrayData = [];
         struct.setCurrentOffset(offset);
@@ -51,7 +72,11 @@ export const createMember = (name: string): Member => {
     },
     arrayAlt: (count: number | string) => {
       const arrayMember = createMember('array');
-      member.callbacks.push((view: DataView, offset: number, data) => {
+      member.callbacks.push((view: DataView, offset: Offset, data) => {
+        if (offset === null) {
+          member.byteSize ||= 4;
+          return null;
+        }
         const loops = typeof count === 'number' ? count : (data[count] as number);
         const arrayData = [];
         let currentOffset = offset;
@@ -65,8 +90,12 @@ export const createMember = (name: string): Member => {
       });
       return arrayMember;
     },
-    custom: (customCallback: ParserCallback, byteSize: number) => {
-      member.callbacks.push((view: DataView, offset: number, data) => {
+    custom: (customCallback: CustomCallback, byteSize: number) => {
+      member.callbacks.push((view: DataView, offset: Offset, data) => {
+        if (offset === null) {
+          member.byteSize ||= 4;
+          return null;
+        }
         member.byteSize ||= byteSize;
         return customCallback(view, offset, data);
       });

@@ -1,11 +1,13 @@
-export type ParserCallback = (view: DataView, offset: number, data: { [key: string]: any }) => any;
+export type Offset = number | null;
+
+export type ParserCallback = (view: DataView, offset: Offset, data: { [key: string]: any }) => any;
 export type CustomCallback = (view: DataView, offset: number, data: { [key: string]: any }) => any;
 
 export interface Member {
   name: string;
   byteSize: number;
   callbacks: ParserCallback[];
-  pointer(): Member;
+  pointer(allowNullPointer?: boolean): Member;
   uint32(): void;
   string(): void;
   struct(struct: Struct): void;
