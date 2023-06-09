@@ -8,12 +8,18 @@ export const createMember = (name: string): Member => {
     name,
     byteSize: 0,
     callbacks: [],
-    uint32: () => {
+    pointer: () => {
       member.callbacks.push((view: DataView, offset: number) => {
         member.byteSize ||= 4;
         return view.getUint32(offset, true);
       });
       return member;
+    },
+    uint32: () => {
+      member.callbacks.push((view: DataView, offset: number) => {
+        member.byteSize ||= 4;
+        return view.getUint32(offset, true);
+      });
     },
     string: () => {
       member.callbacks.push((view: DataView, offset: number) => {
@@ -23,23 +29,13 @@ export const createMember = (name: string): Member => {
         member.byteSize ||= roundUp(nullIndex, 4);
         return decoder.decode(stringArray);
       });
-      return member;
-    },
-    pointer: () => {
-      member.callbacks.push((view: DataView, offset: number) => {
-        member.byteSize ||= 4;
-        return view.getUint32(offset, true);
-      });
-      return member;
     },
     struct: (struct: Struct) => {
       member.callbacks.push((view: DataView, offset: number) => {
-        struct.setCurrentOffset(offset);
-        const structData = struct.parse(view);
+        const structData = struct.parse(view, offset, false);
         member.byteSize ||= struct.getCurrentOffset() - offset;
         return structData;
       });
-      return member;
     },
     array: (struct: Struct, count: number | string) => {
       member.callbacks.push((view: DataView, offset: number, data) => {
@@ -47,7 +43,7 @@ export const createMember = (name: string): Member => {
         const arrayData = [];
         struct.setCurrentOffset(offset);
         for (let i = 0; i < loops; i++) {
-          arrayData.push(struct.parse(view));
+          arrayData.push(struct.parse(view, undefined, false));
         }
         member.byteSize ||= struct.getCurrentOffset() - offset;
         return arrayData;
@@ -80,7 +76,9 @@ export const createMember = (name: string): Member => {
       data[member.name] = member.callbacks.reduce((acc: number, callback: ParserCallback) => {
         return callback(view, acc, data);
       }, offset);
-      return member.byteSize;
+      const finalByteSize = member.byteSize;
+      member.byteSize = 0;
+      return finalByteSize;
     },
   };
 

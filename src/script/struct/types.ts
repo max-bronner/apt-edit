@@ -5,10 +5,10 @@ export interface Member {
   name: string;
   byteSize: number;
   callbacks: ParserCallback[];
-  uint32(): Member;
-  string(): Member;
   pointer(): Member;
-  struct(struct: Struct): Member;
+  uint32(): void;
+  string(): void;
+  struct(struct: Struct): void;
   array(struct: Struct, count: number | string): void;
   arrayAlt(count: number | string): Member;
   custom(customCallback: CustomCallback, byteSize: number): Member;
@@ -19,5 +19,5 @@ export interface Struct {
   getCurrentOffset(): number;
   setCurrentOffset(offset: number): void;
   addMember(name: string): Member;
-  parse(view: DataView, offset?: number): { [key: string]: [any] };
+  parse(view: DataView, offset?: number, reset?: boolean): { [key: string]: [any] };
 }

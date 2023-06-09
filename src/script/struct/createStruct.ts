@@ -10,12 +10,16 @@ export const createStruct = (): Struct => {
     return member;
   };
 
-  const parse = (view: DataView, offset: number) => {
+  const parse = (view: DataView, offset: number, reset: boolean = true) => {
     const data = {};
     currentOffset = offset ?? currentOffset;
     members.forEach((member) => {
       currentOffset += member.parse(view, currentOffset, data);
     });
+    if (reset) {
+      currentOffset = 0;
+    }
+
     return data;
   };
 
