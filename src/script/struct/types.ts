@@ -16,6 +16,7 @@ export interface Member {
 }
 
 export interface Struct {
+  members: Member[];
   getCurrentOffset(): number;
   setCurrentOffset(offset: number): void;
   addMember(name: string): Member;

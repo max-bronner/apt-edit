@@ -1,9 +1,9 @@
 import { createMember } from './createMember';
 import type { Struct, Member } from './types';
 
-export const createStruct = (): Struct => {
+export const createStruct = (struct?: Struct): Struct => {
   let currentOffset = 0;
-  const members: Member[] = [];
+  const members: Member[] = struct ? [...struct.members] : [];
   const addMember = (name: string) => {
     const member = createMember(name);
     members.push(member);
@@ -32,6 +32,7 @@ export const createStruct = (): Struct => {
   };
 
   return {
+    members,
     getCurrentOffset,
     setCurrentOffset,
     addMember,

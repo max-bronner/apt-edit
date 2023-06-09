@@ -27,7 +27,8 @@ const headerStruct = createStruct();
 headerStruct.addMember('fileType').string();
 
 const characterStruct = createStruct();
-characterStruct.addMember('type').pointer().custom(parseCharacterType, 4);
+characterStruct.addMember('type').uint32();
+characterStruct.addMember('signature').uint32();
 
 const frameItemStruct = createStruct();
 frameItemStruct.addMember('type').uint32();
