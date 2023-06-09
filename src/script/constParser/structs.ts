@@ -16,6 +16,6 @@ constStruct.addMember('fileType').string();
 constStruct.addMember('aptOffset').uint32();
 constStruct.addMember('itemCount').uint32();
 constStruct.addMember('unknown').uint32();
-constStruct.addMember('items').array(constItems, 'itemCount');
+constStruct.addMember('items').arrayAlt('itemCount').struct(constItems);
 
 export default constStruct;

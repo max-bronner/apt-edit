@@ -21,13 +21,20 @@ constStruct.addMember('fileType').string();
 constStruct.addMember('aptOffset').uint32();
 constStruct.addMember('itemCount').uint32();
 constStruct.addMember('unknown').uint32();
-constStruct.addMember('items').array(constItems, 'itemCount');
+constStruct.addMember('items').arrayAlt('itemCount').struct(constItems);
 
 const headerStruct = createStruct();
 headerStruct.addMember('fileType').string();
 
 const characterStruct = createStruct();
 characterStruct.addMember('type').pointer().custom(parseCharacterType, 4);
+
+const frameItemStruct = createStruct();
+frameItemStruct.addMember('type').uint32();
+
+const outputFrameStruct = createStruct();
+outputFrameStruct.addMember('frameItemCount').uint32();
+outputFrameStruct.addMember('frameItems').pointer().arrayAlt('frameItemCount').pointer();
 
 const importStruct = createStruct();
 importStruct.addMember('movie').pointer().string();
@@ -39,11 +46,9 @@ const exportStruct = createStruct();
 exportStruct.addMember('name').pointer().string();
 exportStruct.addMember('character').uint32();
 
-const outputMovieStruct = createStruct();
-outputMovieStruct.addMember('type').uint32();
-outputMovieStruct.addMember('signature').uint32();
+const outputMovieStruct = createStruct(characterStruct);
 outputMovieStruct.addMember('frameCount').uint32();
-outputMovieStruct.addMember('frames').uint32();
+outputMovieStruct.addMember('frames').pointer().arrayAlt('frameCount').struct(outputFrameStruct);
 outputMovieStruct.addMember('pointer').uint32();
 outputMovieStruct.addMember('characterCount').uint32();
 outputMovieStruct.addMember('characters').pointer().arrayAlt('characterCount').pointer().custom(parseCharacterType, 4);
@@ -51,9 +56,9 @@ outputMovieStruct.addMember('screenSizeX').uint32();
 outputMovieStruct.addMember('screenSizeY').uint32();
 outputMovieStruct.addMember('unknown').uint32();
 outputMovieStruct.addMember('importCount').uint32();
-outputMovieStruct.addMember('imports').pointer().array(importStruct, 'importCount');
+outputMovieStruct.addMember('imports').pointer().arrayAlt('importCount').struct(importStruct);
 outputMovieStruct.addMember('exportCount').uint32();
-outputMovieStruct.addMember('exports').pointer().array(exportStruct, 'exportCount');
+outputMovieStruct.addMember('exports').pointer().arrayAlt('exportCount').struct(exportStruct);
 outputMovieStruct.addMember('count').uint32();
 
 export const playground = async () => {
