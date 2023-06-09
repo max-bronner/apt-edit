@@ -26,14 +26,20 @@ characterStruct.addMember('type').uint32();
 characterStruct.addMember('signature').uint32();
 
 const vector2Struct = createStruct();
-vector2Struct.addMember('X').uint32();
-vector2Struct.addMember('Y').uint32();
+vector2Struct.addMember('X').float32();
+vector2Struct.addMember('Y').float32();
+
+const colorStruct = createStruct();
+colorStruct.addMember('red').uint8();
+colorStruct.addMember('green').uint8();
+colorStruct.addMember('blue').uint8();
+colorStruct.addMember('alpha').uint8();
 
 const transformStruct = createStruct();
-transformStruct.addMember('m00').uint32();
-transformStruct.addMember('m01').uint32();
-transformStruct.addMember('m10').uint32();
-transformStruct.addMember('m11').uint32();
+transformStruct.addMember('m00').float32();
+transformStruct.addMember('m01').float32();
+transformStruct.addMember('m10').float32();
+transformStruct.addMember('m11').float32();
 
 const frameItemStruct = createStruct();
 frameItemStruct.addMember('type').uint32();
@@ -48,15 +54,15 @@ frameLabelStruct.addMember('frame').uint32();
 
 const placeObjectStruct = createStruct(frameItemStruct);
 placeObjectStruct.addMember('flags').uint32();
-placeObjectStruct.addMember('depth').uint32();
-placeObjectStruct.addMember('character').uint32();
+placeObjectStruct.addMember('depth').int32();
+placeObjectStruct.addMember('character').int32();
 placeObjectStruct.addMember('rotateAndScale').struct(transformStruct);
 placeObjectStruct.addMember('translate').struct(vector2Struct);
-placeObjectStruct.addMember('colorTransform').uint32();
+placeObjectStruct.addMember('colorTransform').struct(colorStruct);
 placeObjectStruct.addMember('unknown').uint32();
-placeObjectStruct.addMember('ratio').uint32();
+placeObjectStruct.addMember('ratio').float32();
 placeObjectStruct.addMember('name').pointer().string();
-placeObjectStruct.addMember('clipdepth').uint32();
+placeObjectStruct.addMember('clipdepth').int32();
 placeObjectStruct.addMember('placeObjectActions').pointer();
 
 const removeObjectStruct = createStruct(frameItemStruct);
@@ -125,6 +131,7 @@ export const playground = async () => {
         case FrameItemType.FrameLabel:
           return frameLabelStruct.parse(viewApt, frameItem);
         case FrameItemType.PlaceObject:
+          console.log(frameItem);
           return placeObjectStruct.parse(viewApt, frameItem);
         case FrameItemType.RemoveObject:
           return removeObjectStruct.parse(viewApt, frameItem);
@@ -136,5 +143,5 @@ export const playground = async () => {
     }),
   );
 
-  console.log(dataApt);
+  console.log(dataOutputFrames);
 };

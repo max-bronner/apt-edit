@@ -8,7 +8,10 @@ export interface Member {
   byteSize: number;
   callbacks: ParserCallback[];
   pointer(allowNullPointer?: boolean): Member;
+  uint8(): void;
+  int32(): void;
   uint32(): void;
+  float32(): void;
   string(): void;
   struct(struct: Struct): void;
   array(count: number | string): Member;

@@ -20,6 +20,26 @@ export const createMember = (name: string): Member => {
       });
       return member;
     },
+    uint8: () => {
+      member.callbacks.push((view: DataView, offset: Offset) => {
+        if (offset === null) {
+          member.byteSize ||= 1;
+          return null;
+        }
+        member.byteSize ||= 1;
+        return view.getUint8(offset);
+      });
+    },
+    int32: () => {
+      member.callbacks.push((view: DataView, offset: Offset) => {
+        if (offset === null) {
+          member.byteSize ||= 4;
+          return null;
+        }
+        member.byteSize ||= 4;
+        return view.getInt32(offset, true);
+      });
+    },
     uint32: () => {
       member.callbacks.push((view: DataView, offset: Offset) => {
         if (offset === null) {
@@ -28,6 +48,16 @@ export const createMember = (name: string): Member => {
         }
         member.byteSize ||= 4;
         return view.getUint32(offset, true);
+      });
+    },
+    float32: () => {
+      member.callbacks.push((view: DataView, offset: Offset) => {
+        if (offset === null) {
+          member.byteSize ||= 4;
+          return null;
+        }
+        member.byteSize ||= 4;
+        return view.getFloat32(offset, true);
       });
     },
     string: () => {
