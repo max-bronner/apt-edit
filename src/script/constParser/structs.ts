@@ -3,13 +3,17 @@ import { getString } from '../utilities/utilities';
 import { CustomCallback } from '../struct/types';
 
 const parseType: CustomCallback = (view, offset, data) => {
-  const dataValue = view.getUint32(offset, true);
-  return data.type === 1 ? getString(view, dataValue) : dataValue;
+  const byteSize = 4;
+  const result = data.type === 1 ? getString(view, offset) : offset;
+  return {
+    byteSize,
+    result,
+  };
 };
 
 const constItems = createStruct();
 constItems.addMember('type').uint32();
-constItems.addMember('value').custom(parseType, 4);
+constItems.addMember('value').pointer().custom(parseType);
 
 const constStruct = createStruct();
 constStruct.addMember('fileType').string();

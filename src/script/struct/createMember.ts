@@ -11,7 +11,6 @@ export const createMember = (name: string): Member => {
     pointer: (allowNullPointer: boolean = false) => {
       member.callbacks.push((view: DataView, offset: Offset) => {
         if (offset === null) {
-          member.byteSize ||= 4;
           return null;
         }
         const pointerValue = view.getUint32(offset, true);
@@ -23,7 +22,6 @@ export const createMember = (name: string): Member => {
     uint8: () => {
       member.callbacks.push((view: DataView, offset: Offset) => {
         if (offset === null) {
-          member.byteSize ||= 1;
           return null;
         }
         member.byteSize ||= 1;
@@ -33,7 +31,6 @@ export const createMember = (name: string): Member => {
     int32: () => {
       member.callbacks.push((view: DataView, offset: Offset) => {
         if (offset === null) {
-          member.byteSize ||= 4;
           return null;
         }
         member.byteSize ||= 4;
@@ -43,7 +40,6 @@ export const createMember = (name: string): Member => {
     uint32: () => {
       member.callbacks.push((view: DataView, offset: Offset) => {
         if (offset === null) {
-          member.byteSize ||= 4;
           return null;
         }
         member.byteSize ||= 4;
@@ -53,7 +49,6 @@ export const createMember = (name: string): Member => {
     float32: () => {
       member.callbacks.push((view: DataView, offset: Offset) => {
         if (offset === null) {
-          member.byteSize ||= 4;
           return null;
         }
         member.byteSize ||= 4;
@@ -63,7 +58,6 @@ export const createMember = (name: string): Member => {
     string: () => {
       member.callbacks.push((view: DataView, offset: Offset) => {
         if (offset === null) {
-          member.byteSize ||= 4;
           return null;
         }
         const charArray = new Uint8Array(view.buffer, offset);
@@ -76,7 +70,6 @@ export const createMember = (name: string): Member => {
     struct: (struct: Struct) => {
       member.callbacks.push((view: DataView, offset: Offset) => {
         if (offset === null) {
-          member.byteSize ||= 4;
           return null;
         }
         const structData = struct.parse(view, offset, false);
@@ -88,7 +81,6 @@ export const createMember = (name: string): Member => {
       const arrayMember = createMember('array');
       member.callbacks.push((view: DataView, offset: Offset, data) => {
         if (offset === null) {
-          member.byteSize ||= 4;
           return null;
         }
         const loops = typeof count === 'number' ? count : (data[count] as number);
@@ -104,14 +96,14 @@ export const createMember = (name: string): Member => {
       });
       return arrayMember;
     },
-    custom: (customCallback: CustomCallback, byteSize: number) => {
+    custom: (customCallback: CustomCallback) => {
       member.callbacks.push((view: DataView, offset: Offset, data) => {
         if (offset === null) {
-          member.byteSize ||= 4;
           return null;
         }
+        const { byteSize, result } = customCallback(view, offset, data);
         member.byteSize ||= byteSize;
-        return customCallback(view, offset, data);
+        return result;
       });
       return member;
     },

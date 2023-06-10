@@ -3,13 +3,26 @@ import type { CustomCallback } from '../types';
 import { getString } from '../../utilities/utilities';
 
 const parseConstItemType: CustomCallback = (view, offset, data) => {
-  const dataValue = view.getUint32(offset, true);
-  return data.type === 1 ? getString(view, dataValue) : dataValue;
+  const byteSize = 4;
+  const result = data.type === 1 ? getString(view, offset) : offset;
+  return {
+    byteSize,
+    result,
+  };
+};
+
+const uint8Aligning: CustomCallback = (view, offset) => {
+  const result = view.getUint8(offset);
+  const byteSize = 4 - (offset % 4);
+  return {
+    byteSize,
+    result,
+  };
 };
 
 const constItems = createStruct();
 constItems.addMember('type').uint32();
-constItems.addMember('value').custom(parseConstItemType, 4);
+constItems.addMember('value').custom(parseConstItemType);
 
 const constStruct = createStruct();
 constStruct.addMember('fileType').string();
@@ -45,7 +58,7 @@ const frameItemStruct = createStruct();
 frameItemStruct.addMember('type').uint32();
 
 const outputActionStruct = createStruct(frameItemStruct);
-outputActionStruct.addMember('actionBytes').pointer();
+outputActionStruct.addMember('actionBytes').pointer().uint8();
 
 const frameLabelStruct = createStruct(frameItemStruct);
 frameLabelStruct.addMember('label').pointer().string();
@@ -58,7 +71,7 @@ placeObjectStruct.addMember('depth').int32();
 placeObjectStruct.addMember('character').int32();
 placeObjectStruct.addMember('rotateAndScale').struct(transformStruct);
 placeObjectStruct.addMember('translate').struct(vector2Struct);
-placeObjectStruct.addMember('colorTransform').struct(colorStruct);
+placeObjectStruct.addMember('color').struct(colorStruct);
 placeObjectStruct.addMember('unknown').uint32();
 placeObjectStruct.addMember('ratio').float32();
 placeObjectStruct.addMember('name').pointer().string();
@@ -69,7 +82,7 @@ const removeObjectStruct = createStruct(frameItemStruct);
 removeObjectStruct.addMember('depth').uint32();
 
 const backgroundColorStruct = createStruct(frameItemStruct);
-backgroundColorStruct.addMember('color').uint32();
+backgroundColorStruct.addMember('color').struct(colorStruct);
 
 const initActionStruct = createStruct(frameItemStruct);
 initActionStruct.addMember('sprite').uint32();
@@ -131,7 +144,6 @@ export const playground = async () => {
         case FrameItemType.FrameLabel:
           return frameLabelStruct.parse(viewApt, frameItem);
         case FrameItemType.PlaceObject:
-          console.log(frameItem);
           return placeObjectStruct.parse(viewApt, frameItem);
         case FrameItemType.RemoveObject:
           return removeObjectStruct.parse(viewApt, frameItem);
