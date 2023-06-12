@@ -17,6 +17,7 @@ export interface PointerOptions extends BaseOptions {
 export interface Member {
   pointer(options?: PointerOptions): Member;
   uint8(options?: BaseOptions): void;
+  uint16(options?: BaseOptions): void;
   int32(options?: BaseOptions): void;
   uint32(options?: BaseOptions): void;
   float32(options?: BaseOptions): void;

@@ -2,6 +2,7 @@ import { roundUp } from '../utilities/utilities';
 import type { Offset, Struct, ParserCallback, CustomCallback, PointerOptions, BaseOptions, Member } from './types';
 
 const BYTES_PER_8BIT = 1;
+const BYTES_PER_16BIT = 2;
 const BYTES_PER_32BIT = 4;
 
 const decoder = new TextDecoder();
@@ -29,6 +30,17 @@ export const createMember = (name: string): Member => {
       if (offset === null) return null;
       const result = view.getUint8(offset);
       byteSize ||= BYTES_PER_8BIT;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
+  const uint16 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getUint16(offset);
+      byteSize ||= BYTES_PER_16BIT;
       if (debug) console.debug(name, offset, result);
       return result;
     });
@@ -100,14 +112,13 @@ export const createMember = (name: string): Member => {
       // todo: add exception if no number and no data key
       const iterations = typeof count === 'number' ? count : (data[count] as number);
       const arrayData = [];
-      let currentOffset = offset;
-      // todo: refactor loop with e.g. reduce
+      let parsedBytes = 0;
       for (let i = 0; i < iterations; i++) {
         const entryData: { array?: any } = {};
-        currentOffset += arrayMember.parse(view, currentOffset, entryData);
+        parsedBytes += arrayMember.parse(view, offset + parsedBytes, entryData);
         arrayData.push(entryData.array);
       }
-      byteSize ||= currentOffset - offset;
+      byteSize ||= parsedBytes;
       if (debug) console.debug(name, offset, arrayData);
       return arrayData;
     });
@@ -138,6 +149,7 @@ export const createMember = (name: string): Member => {
   const publicMethods: Member = {
     pointer,
     uint8,
+    uint16,
     int32,
     uint32,
     float32,
