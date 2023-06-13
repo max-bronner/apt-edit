@@ -1,19 +1,11 @@
 import { createStruct } from '../createStruct';
 import type { CustomCallback } from '../types';
 import { getString } from '../../utilities/utilities';
+import { parseActions } from './actionScript';
 
 const parseConstItemType: CustomCallback = (view, offset, data) => {
   const byteSize = 4;
   const result = data.type === 1 ? getString(view, offset) : offset;
-  return {
-    byteSize,
-    result,
-  };
-};
-
-const uint8Aligning: CustomCallback = (view, offset) => {
-  const result = view.getUint8(offset);
-  const byteSize = 4 - (offset % 4);
   return {
     byteSize,
     result,
@@ -58,7 +50,7 @@ const frameItemStruct = createStruct();
 frameItemStruct.addMember('type').uint32();
 
 const outputActionStruct = createStruct(frameItemStruct);
-outputActionStruct.addMember('actionBytes').pointer().uint8();
+outputActionStruct.addMember('actionBytes').pointer().custom(parseActions);
 
 const frameLabelStruct = createStruct(frameItemStruct);
 frameLabelStruct.addMember('label').pointer().string();
