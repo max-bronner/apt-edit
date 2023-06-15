@@ -144,6 +144,53 @@ enum ActionType {
   EA_PUSHREGISTER = 0xb9,
 }
 
+const singleUint8ArgStruct = createStruct();
+singleUint8ArgStruct.addMember('value').uint8();
+
+const singleUint16ArgStruct = createStruct();
+singleUint16ArgStruct.addMember('value').uint16();
+
+const singleStringArgStruct = createStruct();
+singleStringArgStruct.addMember('value').pointer().string();
+
+const singleUint32ArgStruct = createStruct();
+singleUint32ArgStruct.addMember('value').uint32();
+
+const singleInt32ArgStruct = createStruct();
+singleInt32ArgStruct.addMember('value').int32();
+
+const singleFloatArgStruct = createStruct();
+singleFloatArgStruct.addMember('value').float32();
+
+const constantPoolStruct = createStruct();
+constantPoolStruct.addMember('count').uint32();
+constantPoolStruct.addMember('constants').pointer().array('count').uint32();
+
+const defineFunctionStruct = createStruct();
+defineFunctionStruct.addMember('name').pointer().string();
+defineFunctionStruct.addMember('count').uint32();
+defineFunctionStruct.addMember('args').pointer().array('count').pointer().string();
+defineFunctionStruct.addMember('size').uint32();
+defineFunctionStruct.addMember('signature1').uint32();
+defineFunctionStruct.addMember('signature2').uint32();
+
+const defineFunction2ArgStruct = createStruct();
+defineFunction2ArgStruct.addMember('reg').uint32();
+defineFunction2ArgStruct.addMember('name').pointer().string();
+
+const defineFunction2Struct = createStruct();
+defineFunction2Struct.addMember('name').pointer().string();
+defineFunction2Struct.addMember('count').uint32();
+defineFunction2Struct.addMember('flags').uint32();
+defineFunction2Struct.addMember('args').pointer().array('count').struct(defineFunction2ArgStruct);
+defineFunction2Struct.addMember('size').uint32();
+defineFunction2Struct.addMember('signature1').uint32();
+defineFunction2Struct.addMember('signature2').uint32();
+
+const pushDataStruct = createStruct();
+pushDataStruct.addMember('count').uint32();
+pushDataStruct.addMember('data').pointer().array('count').uint32();
+
 const parseActionScript: ActionScriptCallback = (view, offset, data, size) => {
   const script = [];
   let currentOffset = offset;
@@ -257,9 +304,149 @@ const parseActionScript: ActionScriptCallback = (view, offset, data, size) => {
         currentOffset++;
         script.push({ type: ActionType[type] });
         break;
+      case ActionType.ACTION_GOTOFRAME:
+      case ActionType.ACTION_SETREGISTER:
+      case ActionType.ACTION_BRANCHALWAYS:
+      case ActionType.ACTION_BRANCHIFTRUE:
+      case ActionType.ACTION_GOTOEXPRESSION:
+      case ActionType.EA_BRANCHIFFALSE:
+        currentOffset = roundUp(currentOffset + 1, 4);
+        const singleInt32Arg = singleInt32ArgStruct.parse(view, currentOffset);
+        currentOffset += 4;
+        script.push({
+          type: ActionType[type],
+          ...singleInt32Arg,
+        });
+        break;
+      case ActionType.ACTION_GETURL:
+        currentOffset = roundUp(currentOffset + 1, 4);
+        const str1 = getString(view, view.getUint32(currentOffset, true));
+        currentOffset += 4;
+        const str2 = getString(view, view.getUint32(currentOffset, true));
+        currentOffset += 4;
+        script.push({
+          type: ActionType[type],
+          str1,
+          str2,
+        });
+        currentOffset++;
+        break;
+      case ActionType.ACTION_CONSTANTPOOL:
+        currentOffset = roundUp(currentOffset + 1, 4);
+        const constantPool = constantPoolStruct.parse(view, currentOffset);
+        currentOffset += 8;
+        script.push({
+          type: ActionType[type],
+          ...constantPool,
+        });
+        break;
+      case ActionType.ACTION_SETTARGET:
+      case ActionType.ACTION_GOTOLABEL:
+      case ActionType.ACTION_WITH:
+      case ActionType.EA_PUSHSTRING:
+      case ActionType.EA_GETSTRINGVAR:
+      case ActionType.EA_GETSTRINGMEMBER:
+      case ActionType.EA_SETSTRINGVAR:
+      case ActionType.EA_SETSTRINGMEMBER:
+        currentOffset = roundUp(currentOffset + 1, 4);
+        const singleStringArg = singleStringArgStruct.parse(view, currentOffset);
+        currentOffset += 4;
+        script.push({
+          type: ActionType[type],
+          ...singleStringArg,
+        });
+        break;
+      case ActionType.ACTION_DEFINEFUNCTION2:
+        currentOffset = roundUp(currentOffset + 1, 4);
+        const defineFunction2 = defineFunction2Struct.parse(view, currentOffset);
+        currentOffset += 16;
+        const defineFunction2Script = parseActionScript(
+          view,
+          currentOffset,
+          data,
+          defineFunction2.size as unknown as number,
+        );
+        currentOffset += defineFunction2Script.byteSize + 12;
+        script.push({
+          type: ActionType[type],
+          ...defineFunction2,
+          body: defineFunction2Script.result,
+        });
+        break;
+      case ActionType.ACTION_PUSHDATA:
+        currentOffset = roundUp(currentOffset + 1, 4);
+        const pushData = pushDataStruct.parse(view, currentOffset);
+        currentOffset += 8;
+        script.push({
+          type: ActionType[type],
+          ...pushData,
+        });
+        break;
+      case ActionType.ACTION_DEFINEFUNCTION:
+        currentOffset = roundUp(currentOffset + 1, 4);
+        const defineFunction = defineFunctionStruct.parse(view, currentOffset);
+        currentOffset += 24;
+        const defineFunctionScript = parseActionScript(
+          view,
+          currentOffset,
+          data,
+          defineFunction.size as unknown as number,
+        );
+        currentOffset += defineFunctionScript.byteSize;
+        script.push({
+          type: ActionType[type],
+          ...defineFunction,
+          body: defineFunctionScript.result,
+        });
+        break;
+      case ActionType.EA_PUSHWORDCONSTANT:
+      case ActionType.EA_PUSHSHORT:
+        const singleUint16Arg = singleUint16ArgStruct.parse(view, currentOffset + 1);
+        currentOffset += 2;
+        script.push({
+          type: ActionType[type],
+          ...singleUint16Arg,
+        });
+        break;
+      case ActionType.EA_PUSHCONSTANT:
+      case ActionType.EA_PUSHVALUEOFVAR:
+      case ActionType.EA_GETNAMEDMEMBER:
+      case ActionType.EA_CALLNAMEDFUNCTIONPOP:
+      case ActionType.EA_CALLNAMEDFUNCTION:
+      case ActionType.EA_CALLNAMEDMETHODPOP:
+      case ActionType.EA_CALLNAMEDMETHOD:
+      case ActionType.EA_PUSHBYTE:
+      case ActionType.EA_PUSHREGISTER:
+        const singleUint8Arg = singleUint8ArgStruct.parse(view, currentOffset + 1);
+        currentOffset += 2;
+        script.push({
+          type: ActionType[type],
+          ...singleUint8Arg,
+        });
+        break;
+      case ActionType.EA_PUSHFLOAT:
+        const singleFloatArg = singleFloatArgStruct.parse(view, currentOffset + 1);
+        currentOffset += 5;
+        script.push({
+          type: ActionType[type],
+          ...singleFloatArg,
+        });
+        break;
+      case ActionType.EA_PUSHLONG:
+        const singleUint32Arg = singleUint32ArgStruct.parse(view, currentOffset + 1);
+        currentOffset += 5;
+        script.push({
+          type: ActionType[type],
+          ...singleUint32Arg,
+        });
+        break;
       default:
         isEnd = true;
         break;
+    }
+
+    if (size === currentOffset - offset || type === ActionType.ACTION_END) {
+      isEnd = true;
     }
   } while (!isEnd);
   const result = script;
