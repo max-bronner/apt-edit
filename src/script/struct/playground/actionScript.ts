@@ -199,6 +199,10 @@ const parseActionScript: ActionScriptCallback = (view, offset, data, size) => {
     const type = view.getUint8(currentOffset);
     switch (type) {
       case ActionType.ACTION_END:
+        // Align after action script
+        currentOffset = roundUp(currentOffset + 1, 4);
+        script.push({ type: ActionType[type] });
+        break;
       case ActionType.ACTION_NEXTFRAME:
       case ActionType.ACTION_PREVFRAME:
       case ActionType.ACTION_PLAY:
