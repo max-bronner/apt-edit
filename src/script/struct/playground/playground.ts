@@ -127,8 +127,8 @@ export const playground = async () => {
   const dataConst = constStruct.parse(viewConst);
   const dataApt = outputMovieStruct.parse(viewApt, dataConst.aptOffset as unknown as number);
 
-  const dataOutputFrames = dataApt.frames.map((frames) =>
-    frames.frameItems?.map((frameItem: number) => {
+  const dataOutputFrames = dataApt.frames.map((frame) =>
+    frame.frameItems?.map((frameItem: number) => {
       const type = viewApt.getUint32(frameItem, true);
       switch (type) {
         case FrameItemType.Action:

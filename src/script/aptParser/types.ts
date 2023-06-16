@@ -28,7 +28,7 @@ export interface OutputMovie {
   type: number;
   signature: number;
   frameCount: number;
-  frames: number;
+  frames: any[];
   pointer: number;
   characterCount: number;
   characters: number[];
