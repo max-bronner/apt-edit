@@ -1,5 +1,14 @@
 import { roundUp } from '../utilities/utilities';
-import type { Offset, Struct, ParserCallback, CustomCallback, PointerOptions, BaseOptions, Member } from './types';
+import type {
+  ParsedData,
+  Offset,
+  Struct,
+  ParserCallback,
+  CustomCallback,
+  PointerOptions,
+  BaseOptions,
+  Member,
+} from './types';
 
 const BYTES_PER_8BIT = 1;
 const BYTES_PER_16BIT = 2;
@@ -7,7 +16,7 @@ const BYTES_PER_32BIT = 4;
 
 const decoder = new TextDecoder();
 
-export const createMember = (name: string): Member => {
+export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   // todo: extract repeating logic from parsing functions
   let byteSize = 0;
   const callbacks: ParserCallback[] = [];
@@ -39,7 +48,7 @@ export const createMember = (name: string): Member => {
     const { debug } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
-      const result = view.getUint16(offset);
+      const result = view.getUint16(offset, true);
       byteSize ||= BYTES_PER_16BIT;
       if (debug) console.debug(name, offset, result);
       return result;
@@ -93,7 +102,7 @@ export const createMember = (name: string): Member => {
     });
   };
 
-  const struct = (struct: Struct, options: BaseOptions = {}) => {
+  const struct = (struct: Struct<ParsedData>, options: BaseOptions = {}) => {
     const { debug } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
@@ -137,10 +146,11 @@ export const createMember = (name: string): Member => {
     return publicMethods;
   };
 
-  const parse = (view: DataView, offset: number, data: { [key: string]: any }) => {
-    data[name] = callbacks.reduce((acc: number, callback: ParserCallback) => {
+  const parse = (view: DataView, offset: number, data: Partial<T>) => {
+    const memberData = callbacks.reduce((acc: number, callback: ParserCallback) => {
       return callback(view, acc, data);
     }, offset);
+    data[name] = memberData as T[keyof T];
     const finalByteSize = byteSize;
     byteSize = 0;
     return finalByteSize;

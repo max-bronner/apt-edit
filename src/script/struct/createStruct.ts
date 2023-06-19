@@ -1,17 +1,17 @@
 import { createMember } from './createMember';
-import type { Struct, Member } from './types';
+import type { Struct, Member, ParsedData } from './types';
 
-export const createStruct = (struct?: Struct): Struct => {
-  let currentOffset = 0;
+export const createStruct = <T extends ParsedData>(struct?: Struct<Partial<T>>): Struct<T> => {
+  let currentOffset: number = 0;
   const members: Member[] = struct ? [...struct.members] : [];
-  const addMember = (name: string) => {
+  const addMember = (name: keyof T) => {
     const member = createMember(name);
     members.push(member);
     return member;
   };
 
-  const parse = (view: DataView, offset: number, reset: boolean = true) => {
-    const data = {};
+  const parse = (view: DataView, offset: number, reset: boolean = true): T => {
+    const data: T = {} as T;
     currentOffset = offset ?? currentOffset;
     members.forEach((member) => {
       currentOffset += member.parse(view, currentOffset, data);
