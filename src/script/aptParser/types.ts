@@ -24,11 +24,31 @@ export interface AptFile {
   outputMovie: OutputMovie;
 }
 
-export interface OutputMovie {
+export interface Character {
   type: number;
   signature: number;
+}
+
+export interface OutputFrame {
+  frameItemCount: number;
+  frameItems: any[];
+}
+
+export interface Import {
+  movie: string;
+  name: string;
+  character: number;
+  pointer: number;
+}
+
+export interface Export {
+  name: string;
+  character: number;
+}
+
+export interface OutputMovie extends Character {
   frameCount: number;
-  frames: any[];
+  frames: OutputFrame[];
   pointer: number;
   characterCount: number;
   characters: number[];
@@ -36,15 +56,8 @@ export interface OutputMovie {
   screenSizeY: number;
   unknown: number;
   importCount: number;
-  imports: number;
+  imports: Import[];
   exportCount: number;
-  exports: number;
+  exports: Export[];
   count: number;
-}
-
-export interface Import {
-  movie: string | number;
-  name: string | number;
-  character: number;
-  pointer: number;
 }

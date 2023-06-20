@@ -1,5 +1,6 @@
 import { createStruct } from '../struct/createStruct';
 import { parseActions } from './actionScript/parseAction';
+import type { Export, Import, OutputMovie } from './types';
 
 const headerStruct = createStruct();
 headerStruct.addMember('fileType').string();
@@ -62,17 +63,17 @@ const outputFrameStruct = createStruct();
 outputFrameStruct.addMember('frameItemCount').uint32();
 outputFrameStruct.addMember('frameItems').pointer().array('frameItemCount').pointer();
 
-const importStruct = createStruct();
+const importStruct = createStruct<Import>();
 importStruct.addMember('movie').pointer().string();
 importStruct.addMember('name').pointer().string();
 importStruct.addMember('character').uint32();
 importStruct.addMember('pointer').uint32();
 
-const exportStruct = createStruct();
+const exportStruct = createStruct<Export>();
 exportStruct.addMember('name').pointer().string();
 exportStruct.addMember('character').uint32();
 
-const outputMovieStruct = createStruct(characterStruct);
+const outputMovieStruct = createStruct<OutputMovie>(characterStruct);
 outputMovieStruct.addMember('frameCount').uint32();
 outputMovieStruct.addMember('frames').pointer().array('frameCount').struct(outputFrameStruct);
 outputMovieStruct.addMember('pointer').uint32();

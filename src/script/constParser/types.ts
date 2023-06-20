@@ -4,19 +4,14 @@ export enum ItemType {
   TypeNumber = 4,
 }
 
+export interface Item {
+  type: number;
+  value: number | string;
+}
 export interface ConstFile {
   fileType: string;
   aptOffset: number;
-  items: ConstItem[];
-}
-
-export interface ConstHead {
-  aptOffset: number;
   itemCount: number;
   unknown: number;
-}
-
-export interface ConstItem {
-  itemType: ItemType;
-  itemValue: number | string;
+  items: Item[];
 }
