@@ -1,6 +1,8 @@
 import { createStruct } from '../struct/createStruct';
 import { parseActions } from './actionScript/parseAction';
 import type { Export, Import, OutputMovie } from './types';
+import { parseFrameItem } from './customParser';
+const debug = { debug: true };
 
 const headerStruct = createStruct();
 headerStruct.addMember('fileType').string();
