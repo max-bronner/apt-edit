@@ -63,7 +63,7 @@ initActionStruct.addMember('actionBytes').uint32();
 
 const outputFrameStruct = createStruct();
 outputFrameStruct.addMember('frameItemCount').uint32();
-outputFrameStruct.addMember('frameItems').pointer().array('frameItemCount').pointer();
+outputFrameStruct.addMember('frameItems').pointer().array('frameItemCount').pointer().custom(parseFrameItem);
 
 const importStruct = createStruct<Import>();
 importStruct.addMember('movie').pointer().string();
