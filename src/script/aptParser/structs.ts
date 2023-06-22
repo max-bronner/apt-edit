@@ -1,7 +1,7 @@
 import { createStruct } from '../struct/createStruct';
 import { parseActions } from './actionScript/parseAction';
 import type { Export, Import, OutputMovie } from './types';
-import { parseFrameItem } from './customParser';
+import { parseFrameItem, parseCharacter } from './customParser';
 const debug = { debug: true };
 
 const headerStruct = createStruct();
@@ -75,12 +75,16 @@ const exportStruct = createStruct<Export>();
 exportStruct.addMember('name').pointer().string();
 exportStruct.addMember('character').uint32();
 
+export const shapeStruct = createStruct(characterStruct);
+shapeStruct.addMember('bounds').struct(rectStruct);
+shapeStruct.addMember('geometry').uint32();
+
 const outputMovieStruct = createStruct<OutputMovie>(characterStruct);
 outputMovieStruct.addMember('frameCount').uint32();
 outputMovieStruct.addMember('frames').pointer().array('frameCount').struct(outputFrameStruct);
 outputMovieStruct.addMember('pointer').uint32();
 outputMovieStruct.addMember('characterCount').uint32();
-outputMovieStruct.addMember('characters').pointer().array('characterCount').pointer().uint32();
+outputMovieStruct.addMember('characters').pointer().array('characterCount').pointer().custom(parseCharacter);
 outputMovieStruct.addMember('screenSizeX').uint32();
 outputMovieStruct.addMember('screenSizeY').uint32();
 outputMovieStruct.addMember('unknown').uint32();

@@ -22,3 +22,22 @@ export const parseFrameItem: CustomCallback = (view, offset) => {
       throw Error('Invalid Frame Item');
   }
 };
+
+export const parseCharacter: CustomCallback = (view, offset) => {
+  const type = view.getUint32(offset, true);
+  const byteSize = 0; // required parameter
+  switch (type) {
+    case CharacterType.SHAPE:
+      return { result: Struct.shapeStruct.parse(view, offset), byteSize };
+    case CharacterType.EDITTEXT:
+    case CharacterType.FONT:
+    case CharacterType.BUTTON:
+    case CharacterType.SPRITE:
+    case CharacterType.IMAGE:
+    case CharacterType.MORPH:
+    // skip movie since its the entry character
+    case CharacterType.TEXT:
+    default:
+      return { result: view.getUint32(offset, true), byteSize };
+  }
+};
