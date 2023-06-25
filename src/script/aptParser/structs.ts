@@ -91,6 +91,11 @@ editTextStruct.addMember('wordwrap').uint32();
 editTextStruct.addMember('text').pointer().string();
 editTextStruct.addMember('variable').pointer().string();
 
+export const fontStruct = createStruct(characterStruct);
+fontStruct.addMember('name').pointer().string();
+fontStruct.addMember('glyphcount').uint32();
+fontStruct.addMember('glyphs').pointer().array('glyphcount').uint32();
+
 const outputMovieStruct = createStruct<OutputMovie>(characterStruct);
 outputMovieStruct.addMember('frameCount').uint32();
 outputMovieStruct.addMember('frames').pointer().array('frameCount').struct(outputFrameStruct);
