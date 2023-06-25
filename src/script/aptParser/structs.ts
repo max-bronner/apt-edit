@@ -79,6 +79,18 @@ export const shapeStruct = createStruct(characterStruct);
 shapeStruct.addMember('bounds').struct(rectStruct);
 shapeStruct.addMember('geometry').uint32();
 
+export const editTextStruct = createStruct(characterStruct);
+editTextStruct.addMember('bounds').struct(rectStruct);
+editTextStruct.addMember('font').uint32();
+editTextStruct.addMember('alignment').uint32();
+editTextStruct.addMember('color').struct(colorStruct);
+editTextStruct.addMember('fontheight').float32();
+editTextStruct.addMember('readonly').uint32();
+editTextStruct.addMember('multiline').uint32();
+editTextStruct.addMember('wordwrap').uint32();
+editTextStruct.addMember('text').pointer().string();
+editTextStruct.addMember('variable').pointer().string();
+
 const outputMovieStruct = createStruct<OutputMovie>(characterStruct);
 outputMovieStruct.addMember('frameCount').uint32();
 outputMovieStruct.addMember('frames').pointer().array('frameCount').struct(outputFrameStruct);

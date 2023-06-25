@@ -30,6 +30,7 @@ export const parseCharacter: CustomCallback = (view, offset) => {
     case CharacterType.SHAPE:
       return { result: Struct.shapeStruct.parse(view, offset), byteSize };
     case CharacterType.EDITTEXT:
+      return { result: Struct.editTextStruct.parse(view, offset), byteSize };
     case CharacterType.FONT:
     case CharacterType.BUTTON:
     case CharacterType.SPRITE:
