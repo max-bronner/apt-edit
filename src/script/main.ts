@@ -1,12 +1,8 @@
 import { useParserConst } from './constParser/useParserConst';
 import { useParserApt } from './aptParser/useParserApt';
 import { getFiles } from './utilities/utilities';
-import { playground } from './struct/playground/playground';
 
 const fileInput = <HTMLInputElement>document.getElementById('file-reader__input');
-
-// todo: remove and add proper testing - just for quick manual testing purpose
-playground();
 
 fileInput.addEventListener(
   'change',
