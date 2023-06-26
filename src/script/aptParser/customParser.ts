@@ -36,10 +36,14 @@ export const parseCharacter: CustomCallback = (view, offset) => {
     case CharacterType.BUTTON:
       return { result: Struct.buttonStruct.parse(view, offset), byteSize };
     case CharacterType.SPRITE:
+      return { result: Struct.spriteStruct.parse(view, offset), byteSize };
     case CharacterType.IMAGE:
+      return { result: Struct.imageStruct.parse(view, offset), byteSize };
     case CharacterType.MORPH:
+      return { result: Struct.morphStruct.parse(view, offset), byteSize };
     // skip movie since its the entry character
     case CharacterType.TEXT:
+      return { result: Struct.textStruct.parse(view, offset), byteSize };
     default:
       return { result: view.getUint32(offset, true), byteSize };
   }

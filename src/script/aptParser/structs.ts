@@ -134,8 +134,40 @@ buttonStruct.addMember('triangles').pointer().array('trianglecount').struct(tria
 buttonStruct.addMember('recordcount').uint32();
 buttonStruct.addMember('buttonrecords').pointer().array('recordcount').struct(buttonRecordStruct);
 buttonStruct.addMember('buttonactioncount').uint32();
-buttonStruct.addMember('buttonactionrecords').pointer().array('buttonactioncount').struct(buttonActionStruct);
+buttonStruct.addMember('buttonactionrecords').pointer(debug).array('buttonactioncount').struct(buttonActionStruct);
 buttonStruct.addMember('unknown2').uint32();
+
+export const spriteStruct = createStruct(characterStruct);
+spriteStruct.addMember('frameCount').uint32();
+spriteStruct.addMember('frames').pointer().array('frameCount').struct(outputFrameStruct);
+spriteStruct.addMember('pointer').uint32();
+
+export const imageStruct = createStruct(characterStruct);
+imageStruct.addMember('texture').uint32();
+
+export const morphStruct = createStruct(characterStruct);
+morphStruct.addMember('startshape').uint32();
+morphStruct.addMember('endshape').uint32();
+
+const glyphStruct = createStruct(characterStruct);
+glyphStruct.addMember('index').uint32();
+glyphStruct.addMember('advance').int32();
+
+const outputTextRecordStruct = createStruct(characterStruct);
+outputTextRecordStruct.addMember('font').uint32();
+outputTextRecordStruct.addMember('color').struct(colorStruct);
+outputTextRecordStruct.addMember('unknown').struct(rectStruct);
+outputTextRecordStruct.addMember('offset').struct(vector2Struct);
+outputTextRecordStruct.addMember('textheight').float32();
+outputTextRecordStruct.addMember('glyphcount').uint32();
+outputTextRecordStruct.addMember('glyphs').pointer().array('glyphcount').struct(glyphStruct);
+
+export const textStruct = createStruct(characterStruct);
+textStruct.addMember('bounds').struct(rectStruct);
+textStruct.addMember('rotateandscale').struct(transformStruct);
+textStruct.addMember('translate').struct(vector2Struct);
+textStruct.addMember('recordcount').uint32();
+buttonStruct.addMember('records').pointer().array('recordcount').struct(outputTextRecordStruct);
 
 const outputMovieStruct = createStruct<OutputMovie>(characterStruct);
 outputMovieStruct.addMember('frameCount').uint32();
