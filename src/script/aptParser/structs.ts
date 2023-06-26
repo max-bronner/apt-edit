@@ -134,7 +134,7 @@ buttonStruct.addMember('triangles').pointer().array('trianglecount').struct(tria
 buttonStruct.addMember('recordcount').uint32();
 buttonStruct.addMember('buttonrecords').pointer().array('recordcount').struct(buttonRecordStruct);
 buttonStruct.addMember('buttonactioncount').uint32();
-buttonStruct.addMember('buttonactionrecords').pointer(debug).array('buttonactioncount').struct(buttonActionStruct);
+buttonStruct.addMember('buttonactionrecords').pointer().array('buttonactioncount').struct(buttonActionStruct);
 buttonStruct.addMember('unknown2').uint32();
 
 export const spriteStruct = createStruct(characterStruct);
@@ -167,7 +167,7 @@ textStruct.addMember('bounds').struct(rectStruct);
 textStruct.addMember('rotateandscale').struct(transformStruct);
 textStruct.addMember('translate').struct(vector2Struct);
 textStruct.addMember('recordcount').uint32();
-buttonStruct.addMember('records').pointer().array('recordcount').struct(outputTextRecordStruct);
+textStruct.addMember('records').pointer().array('recordcount').struct(outputTextRecordStruct);
 
 const outputMovieStruct = createStruct<OutputMovie>(characterStruct);
 outputMovieStruct.addMember('frameCount').uint32();
