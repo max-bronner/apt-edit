@@ -34,6 +34,7 @@ export const parseCharacter: CustomCallback = (view, offset) => {
     case CharacterType.FONT:
       return { result: Struct.fontStruct.parse(view, offset), byteSize };
     case CharacterType.BUTTON:
+      return { result: Struct.buttonStruct.parse(view, offset), byteSize };
     case CharacterType.SPRITE:
     case CharacterType.IMAGE:
     case CharacterType.MORPH:

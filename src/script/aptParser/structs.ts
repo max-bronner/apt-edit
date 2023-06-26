@@ -15,11 +15,22 @@ const vector2Struct = createStruct();
 vector2Struct.addMember('X').float32();
 vector2Struct.addMember('Y').float32();
 
+const triangleStruct = createStruct();
+triangleStruct.addMember('v1').uint16();
+triangleStruct.addMember('v2').uint16();
+triangleStruct.addMember('v3').uint16();
+
 const colorStruct = createStruct();
 colorStruct.addMember('red').uint8();
 colorStruct.addMember('green').uint8();
 colorStruct.addMember('blue').uint8();
 colorStruct.addMember('alpha').uint8();
+
+const rectStruct = createStruct();
+rectStruct.addMember('left').float32();
+rectStruct.addMember('top').float32();
+rectStruct.addMember('right').float32();
+rectStruct.addMember('bottom').float32();
 
 const transformStruct = createStruct();
 transformStruct.addMember('m00').float32();
@@ -95,6 +106,36 @@ export const fontStruct = createStruct(characterStruct);
 fontStruct.addMember('name').pointer().string();
 fontStruct.addMember('glyphcount').uint32();
 fontStruct.addMember('glyphs').pointer().array('glyphcount').uint32();
+
+const buttonActionFlagStruct = createStruct();
+buttonActionFlagStruct.addMember('flags').uint32();
+buttonActionFlagStruct.addMember('actiondata').pointer().custom(parseActions);
+
+const buttonActionStruct = createStruct();
+buttonActionStruct.addMember('flags').uint32();
+buttonActionStruct.addMember('actiondata').pointer().custom(parseActions);
+
+const buttonRecordStruct = createStruct();
+buttonRecordStruct.addMember('flags').uint32();
+buttonRecordStruct.addMember('character').uint32();
+buttonRecordStruct.addMember('depth').int32();
+buttonRecordStruct.addMember('rotateandscale').struct(transformStruct);
+buttonRecordStruct.addMember('translate').struct(vector2Struct);
+buttonRecordStruct.addMember('color').struct(rectStruct);
+buttonRecordStruct.addMember('unknown').struct(rectStruct);
+
+export const buttonStruct = createStruct(characterStruct);
+buttonStruct.addMember('unknown').uint32();
+buttonStruct.addMember('bounds').struct(rectStruct);
+buttonStruct.addMember('trianglecount').uint32();
+buttonStruct.addMember('vertexcount').uint32();
+buttonStruct.addMember('vertexes').pointer().array('vertexcount').struct(vector2Struct);
+buttonStruct.addMember('triangles').pointer().array('trianglecount').struct(triangleStruct);
+buttonStruct.addMember('recordcount').uint32();
+buttonStruct.addMember('buttonrecords').pointer().array('recordcount').struct(buttonRecordStruct);
+buttonStruct.addMember('buttonactioncount').uint32();
+buttonStruct.addMember('buttonactionrecords').pointer().array('buttonactioncount').struct(buttonActionStruct);
+buttonStruct.addMember('unknown2').uint32();
 
 const outputMovieStruct = createStruct<OutputMovie>(characterStruct);
 outputMovieStruct.addMember('frameCount').uint32();
