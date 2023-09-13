@@ -11,9 +11,9 @@ import type {
   StructMap,
 } from './types';
 
-const BYTES_PER_8BIT = 1;
-const BYTES_PER_16BIT = 2;
-const BYTES_PER_32BIT = 4;
+const BYTE_SIZE_1 = 1;
+const BYTE_SIZE_2 = 2;
+const BYTE_SIZE_4 = 4;
 
 const decoder = new TextDecoder();
 
@@ -27,7 +27,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
       const result = view.getUint32(offset, true);
-      byteSize ||= BYTES_PER_32BIT;
+      byteSize ||= BYTE_SIZE_4;
       if (debug) console.debug(name, offset, result);
       return allowNullPointer || result !== 0 ? result : null;
     });
@@ -39,7 +39,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
       const result = view.getUint8(offset);
-      byteSize ||= BYTES_PER_8BIT;
+      byteSize ||= BYTE_SIZE_1;
       if (debug) console.debug(name, offset, result);
       return result;
     });
@@ -50,7 +50,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
       const result = view.getUint16(offset, true);
-      byteSize ||= BYTES_PER_16BIT;
+      byteSize ||= BYTE_SIZE_2;
       if (debug) console.debug(name, offset, result);
       return result;
     });
@@ -61,7 +61,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
       const result = view.getInt32(offset, true);
-      byteSize ||= BYTES_PER_32BIT;
+      byteSize ||= BYTE_SIZE_4;
       if (debug) console.debug(name, offset, result);
       return result;
     });
@@ -72,7 +72,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
       const result = view.getUint32(offset, true);
-      byteSize ||= BYTES_PER_32BIT;
+      byteSize ||= BYTE_SIZE_4;
       if (debug) console.debug(name, offset, result);
       return result;
     });
@@ -83,7 +83,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
       const result = view.getFloat32(offset, true);
-      byteSize ||= BYTES_PER_32BIT;
+      byteSize ||= BYTE_SIZE_4;
       if (debug) console.debug(name, offset, result);
       return result;
     });
