@@ -1,5 +1,7 @@
 export type ParsedData = Record<string, any>;
 
+export type StructMap = Record<number, Struct<ParsedData>>;
+
 export type Offset = number | null;
 
 export type ParserCallback = (view: DataView, offset: Offset, data: ParsedData) => any;
@@ -21,6 +23,7 @@ export interface Member {
   float32(options?: BaseOptions): void;
   string(options?: BaseOptions): void;
   struct(struct: Struct<ParsedData>, options?: BaseOptions): void;
+  structByType(structMap: StructMap, options?: BaseOptions): void;
   array(count: number | string, options?: BaseOptions): Member;
   custom(customCallback: CustomCallback, options?: BaseOptions): Member;
   parse(view: DataView, offset: number, structData: ParsedData): number;

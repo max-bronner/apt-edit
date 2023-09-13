@@ -8,6 +8,7 @@ import type {
   PointerOptions,
   BaseOptions,
   Member,
+  StructMap,
 } from './types';
 
 const BYTES_PER_8BIT = 1;
@@ -113,6 +114,20 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     });
   };
 
+  const structByType = (structMap: StructMap, options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const type = view.getUint8(offset);
+      const struct = structMap[type];
+      if (!struct) throw Error(`Missing type: Type ${type} not found in mappings`);
+      const structData = struct.parse(view, offset, false);
+      byteSize ||= struct.getCurrentOffset() - offset;
+      if (debug) console.debug(name, offset, structData);
+      return structData;
+    });
+  };
+
   const array = (count: number | string, options: BaseOptions = {}) => {
     const { debug } = options;
     const arrayMember = createMember('array');
@@ -165,6 +180,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     float32,
     string,
     struct,
+    structByType,
     array,
     custom,
     parse,
