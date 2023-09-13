@@ -1,17 +1,11 @@
 import { createStruct } from '../struct/createStruct';
-import { getString } from '../utilities/utilities';
-import { CustomCallback } from '../struct/types';
-import { ConstFile, Item } from './types';
 import { ConstFile, Item, ItemType } from './types';
 
-const parseType: CustomCallback = (view, offset, data) => {
-  const byteSize = 4;
-  const result = data.type === 1 ? getString(view, offset) : offset;
-  return {
-    byteSize,
-    result,
-  };
-};
+const constItem = createStruct();
+constItem.addMember('type').uint32();
+
+const constItemString = createStruct<Item>(constItem);
+constItemString.addMember('value').pointer().string();
 
 const constItemNumber = createStruct<Item>(constItem);
 constItemNumber.addMember('value').uint32();
