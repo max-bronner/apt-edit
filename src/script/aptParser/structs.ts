@@ -1,7 +1,7 @@
 import { createStruct } from '../struct/createStruct';
 import { parseActions } from './actionScript/parseAction';
 import type { Export, Import, OutputMovie } from './types';
-import { parseFrameItem, parseCharacter } from './customParser';
+import { FrameItemType, CharacterType } from './types';
 const debug = { debug: true };
 
 const headerStruct = createStruct();
@@ -72,9 +72,23 @@ export const initActionStruct = createStruct(frameItemStruct);
 initActionStruct.addMember('sprite').uint32();
 initActionStruct.addMember('actionBytes').uint32();
 
+const frameItemTypeStructMap = {
+  [FrameItemType.ACTION]: outputActionStruct,
+  [FrameItemType.FRAMELABEL]: frameLabelStruct,
+  [FrameItemType.PLACEOBJECT]: placeObjectStruct,
+  [FrameItemType.REMOVEOBJECT]: removeObjectStruct,
+  [FrameItemType.BACKGROUNDCOLOR]: backgroundColorStruct,
+  [FrameItemType.INITACTION]: initActionStruct,
+};
+
 const outputFrameStruct = createStruct();
 outputFrameStruct.addMember('frameItemCount').uint32();
-outputFrameStruct.addMember('frameItems').pointer().array('frameItemCount').pointer().custom(parseFrameItem);
+outputFrameStruct
+  .addMember('frameItems')
+  .pointer()
+  .array('frameItemCount')
+  .pointer()
+  .structByType(frameItemTypeStructMap);
 
 const importStruct = createStruct<Import>();
 importStruct.addMember('movie').pointer().string();
@@ -169,12 +183,29 @@ textStruct.addMember('translate').struct(vector2Struct);
 textStruct.addMember('recordcount').uint32();
 textStruct.addMember('records').pointer().array('recordcount').struct(outputTextRecordStruct);
 
+const characterTypeStructMap = {
+  [CharacterType.SHAPE]: shapeStruct,
+  [CharacterType.EDITTEXT]: editTextStruct,
+  [CharacterType.FONT]: fontStruct,
+  [CharacterType.BUTTON]: buttonStruct,
+  [CharacterType.SPRITE]: spriteStruct,
+  [CharacterType.IMAGE]: imageStruct,
+  [CharacterType.MORPH]: morphStruct,
+  [CharacterType.MOVIE]: createStruct(), // skip movie with empty struct because its the entry character
+  [CharacterType.TEXT]: textStruct,
+};
+
 const outputMovieStruct = createStruct<OutputMovie>(characterStruct);
 outputMovieStruct.addMember('frameCount').uint32();
 outputMovieStruct.addMember('frames').pointer().array('frameCount').struct(outputFrameStruct);
 outputMovieStruct.addMember('pointer').uint32();
 outputMovieStruct.addMember('characterCount').uint32();
-outputMovieStruct.addMember('characters').pointer().array('characterCount').pointer().custom(parseCharacter);
+outputMovieStruct
+  .addMember('characters')
+  .pointer()
+  .array('characterCount')
+  .pointer()
+  .structByType(characterTypeStructMap);
 outputMovieStruct.addMember('screenSizeX').uint32();
 outputMovieStruct.addMember('screenSizeY').uint32();
 outputMovieStruct.addMember('unknown').uint32();
